@@ -2,6 +2,9 @@
 
 **Semantic song recommendations** powered by Spotify-style track metadata, vector search, reranking, and a conversational model. The web UI ships with a retro **Y2K purple** aesthetic.
 
+<img width="1301" height="610" alt="Captura de pantalla 2026-04-18 193510" src="https://github.com/user-attachments/assets/bde538c0-a74b-444c-9ed0-3e8627213130" />
+
+
 ---
 
 ## Overview
