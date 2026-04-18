@@ -55,6 +55,7 @@ class CSVLoader:
                 "source": self.path,
                 "track_name": row.get("track_name", "") or "",
                 "track_artist": row.get("track_artist", "") or "",
+                "track_popularity": int(row.get("track_popularity", 0) or 0),
                 "track_id": row.get("track_id", ""),
                 "playlist_id": row.get("playlist_id", ""),
                 "playlist_genre": row.get("playlist_genre", ""),

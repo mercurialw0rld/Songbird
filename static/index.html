@@ -74,6 +74,21 @@
           placeholder="e.g. late-night synth, high energy, arcade nostalgia…"
           autocomplete="off"
         ></textarea>
+        <div class="filters">
+          <div class="filter-row">
+            <span class="filter-label">Popularity</span>
+            <div class="seg" role="group" aria-label="Popularity filter">
+              <button type="button" class="seg-btn is-active" data-pop="any">Any</button>
+              <button type="button" class="seg-btn" data-pop="known">Known</button>
+              <button type="button" class="seg-btn" data-pop="unknown">Underground</button>
+            </div>
+          </div>
+          <div class="filter-row">
+            <span class="filter-label">Threshold</span>
+            <input id="pop-threshold" class="range-y2k" type="range" min="0" max="100" step="1" value="60" />
+            <span id="pop-threshold-val" class="filter-val">60</span>
+          </div>
+        </div>
         <div class="actions">
           <button type="button" id="btn" class="btn-y2k">
             <span class="btn-shine"></span>

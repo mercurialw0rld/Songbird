@@ -284,6 +284,74 @@ textarea#q:focus {
   justify-content: center;
 }
 
+.filters {
+  margin-top: 0.85rem;
+  padding: 0.75rem 0.85rem;
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 3px;
+}
+
+.filter-row {
+  display: grid;
+  grid-template-columns: 110px 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+  margin-top: 0.6rem;
+}
+
+.filter-row:first-child {
+  margin-top: 0;
+}
+
+.filter-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(232, 224, 255, 0.7);
+}
+
+.filter-val {
+  font-size: 0.8rem;
+  color: var(--cyan);
+  min-width: 2.5ch;
+  text-align: right;
+}
+
+.seg {
+  display: inline-flex;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.seg-btn {
+  cursor: pointer;
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: rgba(232, 224, 255, 0.75);
+  font-family: "Orbitron", sans-serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.45rem 0.7rem;
+}
+
+.seg-btn:hover {
+  color: #fff;
+}
+
+.seg-btn.is-active {
+  color: #1a0633;
+  background: linear-gradient(180deg, #f5e9ff 0%, var(--electric) 45%, var(--violet) 100%);
+}
+
+.range-y2k {
+  width: 100%;
+}
+
 .btn-y2k {
   position: relative;
   cursor: pointer;
@@ -446,5 +514,12 @@ textarea#q:focus {
 @media (max-width: 520px) {
   .track-grid {
     grid-template-columns: 1fr;
+  }
+  .filter-row {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+  .filter-val {
+    text-align: left;
   }
 }

@@ -99,6 +99,8 @@ def retrieve_and_rerank(
     k_rerank=K_AFTER_RERANK,
     google_api_key: str | None = None,
     cohere_api_key: str | None = None,
+    popularity_mode: str = "any",
+    popularity_threshold: int = 60,
 ):
     g = _resolve_google_key(google_api_key)
     c = _resolve_cohere_key(cohere_api_key)
@@ -117,7 +119,8 @@ def retrieve_and_rerank(
         return []
 
     unique_docs = _deduplicate_documents(raw_docs)
-    reranked = _rerank_documents(query, unique_docs, c, top_n=k_rerank)
+    filtered_docs = _filter_by_popularity(unique_docs, popularity_mode, popularity_threshold)
+    reranked = _rerank_documents(query, filtered_docs, c, top_n=k_rerank)
     return reranked
 
 
@@ -135,6 +138,54 @@ def _parse_track_artist_from_content(page_content: str) -> tuple[str, str]:
         elif line.startswith("Artist: "):
             artist = line.removeprefix("Artist: ").strip()
     return name, artist
+
+
+def _parse_popularity_from_content(page_content: str) -> int | None:
+    for line in (page_content or "").split("\n"):
+        if line.startswith("Popularity: "):
+            raw = line.removeprefix("Popularity: ").strip()
+            try:
+                return int(float(raw))
+            except Exception:
+                return None
+    return None
+
+
+def _doc_popularity(doc) -> int | None:
+    meta = doc.metadata or {}
+    p = meta.get("track_popularity")
+    if p is None or p == "":
+        return _parse_popularity_from_content(doc.page_content)
+    try:
+        return int(p)
+    except Exception:
+        return _parse_popularity_from_content(doc.page_content)
+
+
+def _filter_by_popularity(docs, mode: str, threshold: int):
+    """
+    mode:
+      - any: no filtering
+      - known: keep tracks with popularity >= threshold
+      - unknown: keep tracks with popularity <= threshold
+    """
+    mode = (mode or "any").strip().lower()
+    if mode not in {"any", "known", "unknown"}:
+        mode = "any"
+    thr = max(0, min(100, int(threshold)))
+    if mode == "any":
+        return list(docs)
+
+    out = []
+    for d in docs:
+        p = _doc_popularity(d)
+        if p is None:
+            continue
+        if mode == "known" and p >= thr:
+            out.append(d)
+        elif mode == "unknown" and p <= thr:
+            out.append(d)
+    return out
 
 
 def _doc_to_track_preview(doc) -> dict:
@@ -155,6 +206,7 @@ def _doc_to_track_preview(doc) -> dict:
     return {
         "track_name": name,
         "track_artist": artist,
+        "track_popularity": _doc_popularity(doc),
         "playlist_genre": (meta.get("playlist_genre") or "").strip(),
         "playlist_subgenre": (meta.get("playlist_subgenre") or "").strip(),
         "spotify_url": href,
@@ -209,9 +261,15 @@ def recommend_songs(
     query: str,
     google_api_key: str | None = None,
     cohere_api_key: str | None = None,
+    popularity_mode: str = "any",
+    popularity_threshold: int = 60,
 ):
     relevant_docs = retrieve_and_rerank(
-        query, google_api_key=google_api_key, cohere_api_key=cohere_api_key
+        query,
+        google_api_key=google_api_key,
+        cohere_api_key=cohere_api_key,
+        popularity_mode=popularity_mode,
+        popularity_threshold=popularity_threshold,
     )
     if not relevant_docs:
         return NO_MATCH_MESSAGE
@@ -224,10 +282,16 @@ def recommend_songs_payload(
     query: str,
     google_api_key: str | None = None,
     cohere_api_key: str | None = None,
+    popularity_mode: str = "any",
+    popularity_threshold: int = 60,
 ) -> dict:
     """API payload: LLM reply text + reranked track cards."""
     relevant_docs = retrieve_and_rerank(
-        query, google_api_key=google_api_key, cohere_api_key=cohere_api_key
+        query,
+        google_api_key=google_api_key,
+        cohere_api_key=cohere_api_key,
+        popularity_mode=popularity_mode,
+        popularity_threshold=popularity_threshold,
     )
     if not relevant_docs:
         return {"reply": NO_MATCH_MESSAGE, "tracks": []}

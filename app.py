@@ -45,6 +45,16 @@ class RecommendRequest(BaseModel):
         max_length=2048,
         description="Optional; overrides COHERE_API_KEY from the environment.",
     )
+    popularity_mode: str = Field(
+        default="any",
+        description="Popularity filter: any | known | unknown",
+    )
+    popularity_threshold: int = Field(
+        default=60,
+        ge=0,
+        le=100,
+        description="Threshold used by popularity_mode (0..100).",
+    )
 
 
 @app.post("/api/recommend")
@@ -54,6 +64,8 @@ def api_recommend(body: RecommendRequest):
             body.query.strip(),
             google_api_key=(body.google_api_key or "").strip() or None,
             cohere_api_key=(body.cohere_api_key or "").strip() or None,
+            popularity_mode=(body.popularity_mode or "any").strip().lower(),
+            popularity_threshold=body.popularity_threshold,
         )
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e)) from e

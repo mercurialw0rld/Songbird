@@ -3,6 +3,8 @@ const $ = (sel) => document.querySelector(sel);
 const LS_GOOGLE = "songbird_google_api_key";
 const LS_COHERE = "songbird_cohere_api_key";
 
+let popularityMode = "any";
+
 function escapeHtml(s) {
   const div = document.createElement("div");
   div.textContent = s;
@@ -52,7 +54,11 @@ function renderTracks(tracks) {
     const node = tpl.content.cloneNode(true);
     node.querySelector(".track-title").textContent = t.track_name || "—";
     node.querySelector(".track-artist").textContent = t.track_artist || "";
-    const g = [t.playlist_genre, t.playlist_subgenre].filter(Boolean).join(" · ");
+    const pop =
+      typeof t.track_popularity === "number" && Number.isFinite(t.track_popularity)
+        ? `pop ${t.track_popularity}`
+        : "";
+    const g = [t.playlist_genre, t.playlist_subgenre, pop].filter(Boolean).join(" · ");
     node.querySelector(".track-genre").textContent = g || "♪";
     const a = node.querySelector(".track-link");
     if (t.spotify_url) {
@@ -95,6 +101,7 @@ async function submit() {
   try {
     const google_api_key = $("#key-google").value.trim() || null;
     const cohere_api_key = $("#key-cohere").value.trim() || null;
+    const popularity_threshold = Number($("#pop-threshold")?.value || 60);
 
     const res = await fetch("/api/recommend", {
       method: "POST",
@@ -103,6 +110,8 @@ async function submit() {
         query: q,
         google_api_key,
         cohere_api_key,
+        popularity_mode: popularityMode,
+        popularity_threshold,
       }),
     });
 
@@ -129,6 +138,27 @@ async function submit() {
 loadKeysFromStorage();
 
 $("#btn-save-keys").addEventListener("click", saveKeysToStorage);
+
+function initPopularityFilters() {
+  const buttons = Array.from(document.querySelectorAll(".seg-btn[data-pop]"));
+  for (const b of buttons) {
+    b.addEventListener("click", () => {
+      popularityMode = b.getAttribute("data-pop") || "any";
+      for (const x of buttons) x.classList.toggle("is-active", x === b);
+    });
+  }
+
+  const r = $("#pop-threshold");
+  const v = $("#pop-threshold-val");
+  const sync = () => {
+    if (!r || !v) return;
+    v.textContent = String(r.value);
+  };
+  if (r) r.addEventListener("input", sync);
+  sync();
+}
+
+initPopularityFilters();
 
 $("#btn").addEventListener("click", submit);
 $("#q").addEventListener("keydown", (ev) => {
