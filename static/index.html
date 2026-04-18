@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Songbird ✧ Y2K mix</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Audiowide&family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <div class="noise" aria-hidden="true"></div>
+    <div class="grid-bg" aria-hidden="true"></div>
+
+    <header class="site-header">
+      <div class="chrome-badge">
+        <span class="sparkle" aria-hidden="true">✦</span>
+        <h1 class="logo">SONGBIRD</h1>
+        <span class="sparkle" aria-hidden="true">✦</span>
+      </div>
+      <p class="tagline">RAG playlist engine · est. 2003<span class="blink">_</span></p>
+    </header>
+
+    <main class="shell">
+      <section class="panel panel-keys">
+        <div class="panel-titlebar purple">
+          <span class="panel-label">api_keys.cfg</span>
+        </div>
+        <div class="keys-inner">
+          <p class="keys-hint">
+            Keys stay in <strong>this browser only</strong>
+          </p>
+          <label class="field-label" for="key-google">GOOGLE_API_KEY</label>
+          <input
+            id="key-google"
+            type="password"
+            class="input-y2k"
+            autocomplete="off"
+            placeholder="from .env or paste here"
+            spellcheck="false"
+          />
+          <label class="field-label" for="key-cohere">COHERE_API_KEY</label>
+          <input
+            id="key-cohere"
+            type="password"
+            class="input-y2k"
+            autocomplete="off"
+            placeholder="from .env or paste here"
+            spellcheck="false"
+          />
+          <div class="keys-actions">
+            <button type="button" id="btn-save-keys" class="btn-y2k btn-y2k--sm">
+              <span class="btn-shine"></span>
+              <span class="btn-text">Save to browser</span>
+            </button>
+            <span id="keys-saved" class="keys-saved" hidden>Saved ✓</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel panel-input">
+        <div class="panel-titlebar">
+          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+          <span class="panel-label">query.exe</span>
+        </div>
+        <label class="field-label" for="q">What vibe are you chasing?</label>
+        <textarea
+          id="q"
+          rows="3"
+          placeholder="e.g. late-night synth, high energy, arcade nostalgia…"
+          autocomplete="off"
+        ></textarea>
+        <div class="actions">
+          <button type="button" id="btn" class="btn-y2k">
+            <span class="btn-shine"></span>
+            <span class="btn-text">Beam to the cosmos</span>
+          </button>
+        </div>
+        <p id="err" class="err" hidden></p>
+      </section>
+
+      <section class="panel panel-tracks" id="tracks-section" hidden>
+        <div class="panel-titlebar purple">
+          <span class="panel-label">top_matches.dat</span>
+        </div>
+        <div id="tracks" class="track-grid"></div>
+      </section>
+
+      <section class="panel panel-reply" id="reply-section" hidden>
+        <div class="panel-titlebar purple">
+          <span class="panel-label">oracle_response.log</span>
+        </div>
+        <div id="reply" class="reply-body"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>made with chrome dreams &amp; ultraviolet</span>
+      <span class="sep">·</span>
+      <span>Songbird</span>
+    </footer>
+
+    <template id="tpl-track">
+      <article class="track-card">
+        <div class="track-glow"></div>
+        <h3 class="track-title"></h3>
+        <p class="track-artist"></p>
+        <p class="track-genre"></p>
+        <a class="track-link" target="_blank" rel="noopener noreferrer">Open in Spotify »</a>
+      </article>
+    </template>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>
