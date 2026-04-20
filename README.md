@@ -58,7 +58,7 @@ flowchart LR
 ## Installation
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/Songbird.git
+git clone https://github.com/mercurialw0rld/Songbird.git
 cd Songbird
 python -m venv .venv
 
