@@ -1,12 +1,3 @@
-"""
-Songbird web server: recommendation API + static frontend.
-
-Run from the Songbird folder (on Windows, `python -m` is usually required):
-
-  python -m uvicorn app:app --reload --host 127.0.0.1 --port 8765
-
-Or double-click run.bat.
-"""
 
 from pathlib import Path
 
